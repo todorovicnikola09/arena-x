@@ -3,9 +3,20 @@
     "name": "ArenaX",
     "slug": "ArenaX",
     "version": "1.0.0",
+    "scheme": "arenax",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "plugins": [
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "ArenaX uses your photos to set a cover image for tournaments you create."
+        }
+      ]
+    ],
     "ios": {
       "supportsTablet": true
     },
