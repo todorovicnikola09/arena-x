@@ -1,0 +1,12 @@
+import { YStack, Text, H3 } from 'tamagui';
+
+export default function TournamentListScreen() {
+  return (
+    <YStack flex={1} alignItems="center" justifyContent="center" padding="$5" gap="$2">
+      <H3>Browse Tournaments</H3>
+      <Text color="$color11" textAlign="center">
+        Coming in Phase 2: list of open tournaments with game filters.
+      </Text>
+    </YStack>
+  );
+}
