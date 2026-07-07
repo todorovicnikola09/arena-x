@@ -1,13 +1,23 @@
 import { createTamagui } from 'tamagui';
 import { config as defaultConfig } from '@tamagui/config';
 
-// ArenaX brand accent — used sparingly (buttons, active states, chips)
 const arenaxTokens = {
   ...defaultConfig.tokens,
   color: {
     ...defaultConfig.tokens.color,
-    arenaxPrimary: '#6C5CE7',
+    arenaxPrimary: '#8B5CF6',
     arenaxPrimaryDark: '#4834D4',
+    arenaxBlue: '#4F6BFF',
+
+    bg: '#0B0714',
+    bgElevated: '#161022',
+    bgCard: '#150F20',
+    cardBorder: 'rgba(139,92,246,0.18)',
+
+    textPrimary: '#FFFFFF',
+    textDim: '#9CA3AF',
+
+    statusLive: '#FF4757',
     statusOpen: '#2ECC71',
     statusClosed: '#F39C12',
     statusFinished: '#7F8C8D',

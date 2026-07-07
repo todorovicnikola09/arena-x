@@ -42,24 +42,29 @@ async function restRequest<T>(path: string, options: RestOptions = {}): Promise<
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
   });
 
+  const rawText = await response.text();
+
   if (!response.ok) {
     let errorBody: unknown = null;
     try {
-      errorBody = await response.json();
+      errorBody = rawText ? JSON.parse(rawText) : null;
     } catch {
+      errorBody = rawText || null;
     }
-    throw new ApiError(
-      `PostgREST request failed: ${response.status} ${response.statusText}`,
-      response.status,
-      errorBody
-    );
+
+    const message =
+      errorBody && typeof errorBody === 'object' && 'message' in errorBody
+        ? String((errorBody as any).message)
+        : `PostgREST request failed: ${response.status} ${response.statusText}`;
+
+    throw new ApiError(message, response.status, errorBody);
   }
 
-  if (response.status === 204) {
+  if (!rawText) {
     return undefined as T;
   }
 
-  return (await response.json()) as T;
+  return JSON.parse(rawText) as T;
 }
 
 export const api = {

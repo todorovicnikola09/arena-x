@@ -2,12 +2,17 @@ import { supabase } from './supabase';
 import { getProfile } from './profiles';
 import type { Profile } from '../types/database';
 
-export async function signUp(email: string, password: string, fullName: string) {
+export async function signUp(
+  email: string,
+  password: string,
+  fullName: string,
+  username: string
+) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      data: { full_name: fullName },
+      data: { full_name: fullName, username },
     },
   });
   if (error) throw error;

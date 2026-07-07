@@ -13,8 +13,14 @@ create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   email text not null,
   full_name text,
+  username text,
+  rank text not null default 'Bronze' check (rank in ('Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master')),
   created_at timestamptz not null default now()
 );
+
+-- username is optional at the DB level (nullable) but must be unique when set,
+-- so existing rows created before this column existed don't break
+create unique index if not exists idx_profiles_username on public.profiles (username) where username is not null;
 
 -- tournaments
 create table if not exists public.tournaments (
@@ -28,6 +34,11 @@ create table if not exists public.tournaments (
   max_participants integer not null check (max_participants > 0),
   status text not null default 'open' check (status in ('open', 'closed', 'finished')),
   owner_id uuid not null references public.profiles (id) on delete cascade,
+  prize_pool numeric,
+  game_mode text,
+  team_format text,
+  rules text,
+  is_live boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -73,8 +84,13 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id, email, full_name)
-  values (new.id, new.email, new.raw_user_meta_data ->> 'full_name')
+  insert into public.profiles (id, email, full_name, username)
+  values (
+    new.id,
+    new.email,
+    new.raw_user_meta_data ->> 'full_name',
+    new.raw_user_meta_data ->> 'username'
+  )
   on conflict (id) do nothing;
   return new;
 end;
@@ -329,3 +345,27 @@ create policy "tournament_covers_owner_delete"
   on storage.objects for delete
   to authenticated
   using (bucket_id = 'tournament-covers' and owner = auth.uid());
+
+-- ------------------------------------------------------------
+-- Migration: new profile/tournament fields for the redesigned UI
+-- (safe to run even if you already ran this file once before —
+--  ADD COLUMN IF NOT EXISTS is a no-op when the column already exists)
+-- ------------------------------------------------------------
+alter table public.profiles add column if not exists username text;
+alter table public.profiles add column if not exists rank text not null default 'Bronze';
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'profiles_rank_check'
+  ) then
+    alter table public.profiles add constraint profiles_rank_check
+      check (rank in ('Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master'));
+  end if;
+end $$;
+create unique index if not exists idx_profiles_username on public.profiles (username) where username is not null;
+
+alter table public.tournaments add column if not exists prize_pool numeric;
+alter table public.tournaments add column if not exists game_mode text;
+alter table public.tournaments add column if not exists team_format text;
+alter table public.tournaments add column if not exists rules text;
+alter table public.tournaments add column if not exists is_live boolean not null default false;

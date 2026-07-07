@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { YStack, Text, H2 } from 'tamagui';
-import { useRouter, Link } from 'expo-router';
+import { YStack, Text, ScrollView } from 'tamagui';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { AuthHeader } from '../../components/AuthHeader';
+import { GradientButton } from '../../components/GradientButton';
 import { FormField } from '../../components/FormField';
-import { PrimaryButton } from '../../components/PrimaryButton';
 import { signIn } from '../../lib/auth';
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,36 +33,59 @@ export default function LoginScreen() {
   }
 
   return (
-    <YStack flex={1} justifyContent="center" padding="$5" gap="$4" backgroundColor="$background">
-      <H2>Log in</H2>
+    <ScrollView backgroundColor="$bg" flex={1}>
+      <YStack padding="$5" gap="$5">
+        <AuthHeader active="login" />
 
-      <FormField
-        label="Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        placeholder="you@example.com"
-      />
-      <FormField
-        label="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        placeholder="••••••••"
-      />
+        <YStack backgroundColor="$bgCard" borderWidth={1} borderColor="$cardBorder" borderRadius="$6" padding="$5" gap="$4">
+          <YStack gap="$1">
+            <Text color="white" fontSize="$7" fontWeight="800">Welcome back</Text>
+            <Text color="$textDim" fontSize="$3">Sign in to your ArenaX account</Text>
+          </YStack>
 
-      {error ? <Text color="$statusRejected">{error}</Text> : null}
+          <FormField
+            label="EMAIL"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            placeholder="you@example.com"
+          />
 
-      <PrimaryButton onPress={handleLogin} isLoading={isLoading}>
-        Log in
-      </PrimaryButton>
+          <FormField
+            label="PASSWORD"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            placeholder="••••••••"
+            rightIcon={
+              <Ionicons
+                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                size={18}
+                color="#9CA3AF"
+                onPress={() => setShowPassword((s) => !s)}
+              />
+            }
+          />
 
-      <Link href="/(auth)/register" asChild>
-        <Text color="$arenaxPrimary" textAlign="center">
-          Don&apos;t have an account? Sign up
-        </Text>
-      </Link>
-    </YStack>
+          <Text color="$arenaxPrimary" fontSize="$2" alignSelf="flex-end" fontWeight="600">
+            Forgot password?
+          </Text>
+
+          {error ? <Text color="$statusRejected" fontSize="$2">{error}</Text> : null}
+
+          <GradientButton onPress={handleLogin} isLoading={isLoading} icon={<Ionicons name="flash" size={16} color="#fff" />}>
+            SIGN IN
+          </GradientButton>
+
+          <Text color="$textDim" fontSize="$2" textAlign="center">
+            Don't have an account?{' '}
+            <Text color="$arenaxPrimary" fontWeight="700" onPress={() => router.push('/(auth)/register')}>
+              Register now
+            </Text>
+          </Text>
+        </YStack>
+      </YStack>
+    </ScrollView>
   );
 }
