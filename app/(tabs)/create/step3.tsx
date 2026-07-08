@@ -26,7 +26,6 @@ export default function CreateStep3Screen() {
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
 
-  // Debounced live search as the user types
   useEffect(() => {
     if (!query.trim()) {
       setSuggestions([]);
@@ -38,7 +37,6 @@ export default function CreateStep3Screen() {
       setSearchError(null);
       try {
         const results = await searchProfilesByUsername(query, profile?.id);
-        // hide anyone already added
         const filtered = results.filter(
           (r) => !form.coOrganizers.some((c) => c.id === r.id)
         );

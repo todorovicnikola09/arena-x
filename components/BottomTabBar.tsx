@@ -26,8 +26,7 @@ const ROOT_PATHS: Record<string, string> = {
   create: '/(tabs)/create',
 };
 
-// Only these tabs are shown in the bottom bar. "profile" is intentionally
-// excluded — it's reached via the avatar on the Discover screen instead.
+
 const VISIBLE_TABS = ['index', 'tournaments', 'dashboard', 'create'];
 
 export function BottomTabBar({ state }: BottomTabBarProps) {

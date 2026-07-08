@@ -42,9 +42,6 @@ export async function updateApplicationStatus(
   return rows[0];
 }
 
-// ------------------------------------------------------------------
-// "My Applications" screen — used by the applicant, not the organizer
-// ------------------------------------------------------------------
 
 export interface MyApplicationRow extends Omit<Application, 'tournaments'> {
   tournaments: Tournament | Tournament[] | null;

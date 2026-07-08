@@ -68,9 +68,6 @@ export default function LoginScreen() {
             }
           />
 
-          <Text color="$arenaxPrimary" fontSize="$2" alignSelf="flex-end" fontWeight="600">
-            Forgot password?
-          </Text>
 
           {error ? <Text color="$statusRejected" fontSize="$2">{error}</Text> : null}
 

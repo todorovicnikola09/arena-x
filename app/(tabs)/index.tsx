@@ -104,9 +104,6 @@ export default function DiscoverScreen() {
           </YStack>
 
           <XStack alignItems="center" gap="$3">
-            <View backgroundColor="$bgElevated" borderRadius={20} padding="$2.5">
-              <Ionicons name="notifications-outline" size={18} color="white" />
-            </View>
             <Pressable onPress={() => router.push('/(tabs)/profile')}>
               <AvatarBadge initials={initials} size={40} />
             </Pressable>
